@@ -30,7 +30,6 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
-
   final String title;
 
   @override
@@ -40,10 +39,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   DateTime? selectedDate;
-  Random random = new Random();
 
   DateTime firstDate = DateTime.now().subtract(const Duration(days: 10));
-  DateTime lastDate = DateTime.now().add(const Duration(days: 8));
+  DateTime lastDate = DateTime.now().add(const Duration(days: 2));
 
   String expiring = 'Nothing Expiring' ;
 
@@ -84,13 +82,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
   Future<void> scanBarcode() async {
 
-    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-        "#ff6666",
-        "Cancel",
-        false,
-        ScanMode.BARCODE);
+    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#ff6666","Cancel",false,ScanMode.BARCODE);
 
     print(barcodeScanRes);
+  }
+  void updateAppBar(CalendarAppBar bar){
+
   }
 
   @override
@@ -104,17 +101,19 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
 
-
-
-    return Scaffold(
-      appBar: CalendarAppBar(
+    CalendarAppBar appBar = CalendarAppBar(
       backButton: false,
       onDateChanged: (value) => onDateChanged(value),
       firstDate: firstDate,
-      selectedDate: DateTime.now().add(Duration(days:2)),
+      selectedDate: DateTime.now(),
       lastDate: lastDate,
       events: List.generate(eventList.length, (index) => DateTime.parse(eventList[index])),
-    ),
+    );
+
+    
+
+    return Scaffold(
+      appBar: appBar,
       body: Center(
 
         child: Column(

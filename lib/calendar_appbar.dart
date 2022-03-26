@@ -74,6 +74,8 @@ class CalendarAppBar extends StatefulWidget implements PreferredSizeWidget {
 
   ///creating a getter for [preferredSize]
   Size get preferredSize => new Size.fromHeight(250.0);
+
+
 }
 
 class _CalendarAppBarState extends State<CalendarAppBar> {
@@ -121,6 +123,7 @@ class _CalendarAppBarState extends State<CalendarAppBar> {
     to = DateTime(to.year, to.month, to.day);
     return (to.difference(from).inHours / 24).round();
   }
+
   ScrollController makeController() {
     double width = MediaQuery.of(context).size.width;
 
@@ -161,8 +164,6 @@ class _CalendarAppBarState extends State<CalendarAppBar> {
 
       selectedDate = (daysBetween(selectedDate, widget.lastDate ) < 0)? widget.lastDate : selectedDate;
 
-      print(selectedDate);
-
       ///initializing referenceDate
       referenceDate = selectedDate;
 
@@ -171,9 +172,6 @@ class _CalendarAppBarState extends State<CalendarAppBar> {
 
       ///initializing position to 1
       position = daysBetween(selectedDate, widget.lastDate) + 1;
-      print(daysBetween(selectedDate, widget.lastDate));
-
-
 
     });
 
@@ -184,9 +182,9 @@ class _CalendarAppBarState extends State<CalendarAppBar> {
         datesWithEnteries.add(element.toString().split(" ").first);
       }
     }
+
     super.initState();
   }
-
 
 
   @override
