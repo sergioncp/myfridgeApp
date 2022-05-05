@@ -6,6 +6,8 @@ import 'dart:math';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
+import 'item.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -41,13 +43,15 @@ class _MyHomePageState extends State<MyHomePage> {
   DateTime? selectedDate;
 
   DateTime firstDate = DateTime.now().subtract(const Duration(days: 10));
-  DateTime lastDate = DateTime.now().add(const Duration(days: 2));
+  DateTime lastDate = DateTime.now().add(const Duration(days: 100));
 
   String expiring = 'Nothing Expiring' ;
 
-  Map <String, String> eventBoard = HashMap();
+  List<String> eventBoard = [];
 
-  late List<String> eventList = [];
+  List<CalendarItem> itemsOnScreen = [];
+
+  late List<CalendarItem> eventList = [];
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -62,10 +66,24 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void onDateChanged(DateTime value){
 
+    itemsOnScreen = [];
     setState(() {
-      expiring = eventList.contains(getDateTimeFormat(value))? "Something is set to Expire" : "Nothing Expiring Today" ;
 
+      var it = eventList.iterator;
+
+      while(it.moveNext()){
+        CalendarItem item = it.current;
+
+        if(item.date == getDateTimeFormat(value)){
+          itemsOnScreen.add(item);
+        }
+      }
+      if(itemsOnScreen.length == 0){
+        itemsOnScreen.add(new CalendarItem(date: "No Items Expiring Today", name: "Nothing"));
+      }
     });
+
+
 
   }
   String getDateTimeFormat(DateTime date){
@@ -75,8 +93,8 @@ class _MyHomePageState extends State<MyHomePage> {
   void createNewEvent(DateTime date){
 
     setState(() {
-      eventBoard.putIfAbsent(getDateTimeFormat(date), () => "test");
-      eventList.add(getDateTimeFormat(date));
+      eventBoard.add(getDateTimeFormat(date));
+      eventList.add(CalendarItem(date: getDateTimeFormat(date), name: "test",));
     });
 
   }
@@ -86,6 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     print(barcodeScanRes);
   }
+
   void updateAppBar(CalendarAppBar bar){
 
   }
@@ -107,20 +126,17 @@ class _MyHomePageState extends State<MyHomePage> {
       firstDate: firstDate,
       selectedDate: DateTime.now(),
       lastDate: lastDate,
-      events: List.generate(eventList.length, (index) => DateTime.parse(eventList[index])),
+      events: List.generate(eventBoard.length, (index) => DateTime.parse(eventBoard[index])),
     );
-
-    
 
     return Scaffold(
       appBar: appBar,
       body: Center(
 
         child: Column(
-
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(expiring),
+            ...itemsOnScreen,
 
           ],
         ),
