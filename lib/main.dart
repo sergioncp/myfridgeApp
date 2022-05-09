@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:myfridge/new_item.dart';
 import 'calendar_appbar.dart';
 import 'dart:math';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -20,11 +21,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'My Fridge',
-      theme: ThemeData(
-
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'MyFridge'),
+      initialRoute: '/',
+      routes: {
+          // When navigating to the "/" route, build the FirstScreen widget.
+          '/': (context) => const MyHomePage(title: "MyFridge"),
+          // When navigating to the "/second" route, build the SecondScreen widget.
+          '/new': (context) => const AddNewItem(),
+        },
     );
   }
 }
@@ -53,16 +56,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late List<CalendarItem> eventList = [];
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(2015, 8),
-        lastDate: DateTime(2101));
-    if (picked != null) {
-      createNewEvent(picked);
-    }
-  }
 
   void onDateChanged(DateTime value){
 
@@ -158,7 +151,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: const Icon(Icons.edit),
             backgroundColor: Colors.blue,
             foregroundColor: Colors.white,
-            onTap: () => _selectDate(context)
+            onTap: () => Navigator.pushNamed(context, '/new')
           )
         ]
       ), // This trailing comma makes auto-formatting nicer for build methods.
