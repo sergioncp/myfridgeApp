@@ -52,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<String> eventBoard = [];
 
-  List<CalendarItem> itemsOnScreen = [];
+  List<Widget> itemsOnScreen = [];
 
   late List<CalendarItem> eventList = [];
 
@@ -68,11 +68,12 @@ class _MyHomePageState extends State<MyHomePage> {
         CalendarItem item = it.current;
 
         if(item.date == getDateTimeFormat(value)){
+          print(item);
           itemsOnScreen.add(item);
         }
       }
       if(itemsOnScreen.length == 0){
-        itemsOnScreen.add(new CalendarItem(date: "No Items Expiring Today", name: "Nothing"));
+        itemsOnScreen.add(Text("No Items Expiring"));
       }
     });
 
@@ -83,11 +84,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return  date.year.toString() + "-" + (date.month.toString().length == 1 ? "0"+date.month.toString() : date.month.toString()) + "-" + (date.day.toString().length == 1 ? "0"+date.day.toString() : date.day.toString() );
   }
-  void createNewEvent(DateTime date){
+
+  void createNewEvent(DateTime date, String itemName){
 
     setState(() {
       eventBoard.add(getDateTimeFormat(date));
-      eventList.add(CalendarItem(date: getDateTimeFormat(date), name: "test",));
+      eventList.add(CalendarItem(date: getDateTimeFormat(date), name: itemName,));
     });
 
   }
@@ -124,6 +126,31 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: appBar,
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text('My Fridge'),
+            ),
+            ListTile(
+              title: const Text('Calendar'),
+              onTap: () {
+                print("move to calendar Screen");
+              },
+            ),
+            ListTile(
+              title: const Text('Grocery Lists'),
+              onTap: () {
+                print("move to grocery list screen");
+              },
+            ),
+          ],
+        ),
+      ),
       body: Center(
 
         child: Column(
@@ -151,7 +178,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: const Icon(Icons.edit),
             backgroundColor: Colors.blue,
             foregroundColor: Colors.white,
-            onTap: () => Navigator.pushNamed(context, '/new')
+            onTap: () => Navigator.pushNamed(context, '/new', arguments: createNewEvent)
           )
         ]
       ), // This trailing comma makes auto-formatting nicer for build methods.
