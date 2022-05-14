@@ -38,6 +38,7 @@ dependencies:
   flutter_speed_dial: ^5.0.0+1
   calendar_timeline: ^1.0.4
   flutter_barcode_scanner: ^2.0.0
+  localstore: ^1.2.3
 
 dev_dependencies:
   flutter_test:

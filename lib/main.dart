@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:myfridge/groceryLists.dart';
 import 'package:myfridge/new_item.dart';
 import 'calendar_appbar.dart';
 import 'dart:math';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
           '/': (context) => const MyHomePage(title: "MyFridge"),
           // When navigating to the "/second" route, build the SecondScreen widget.
           '/new': (context) => const AddNewItem(),
+          '/grocery' : (context) => const GroceryLists(),
         },
     );
   }
@@ -139,13 +141,16 @@ class _MyHomePageState extends State<MyHomePage> {
             ListTile(
               title: const Text('Calendar'),
               onTap: () {
-                print("move to calendar Screen");
+                if(ModalRoute.of(context)?.settings.name == '/'){
+                  Navigator.pop(context);
+                }
+
               },
             ),
             ListTile(
               title: const Text('Grocery Lists'),
               onTap: () {
-                print("move to grocery list screen");
+                Navigator.pushNamed(context, '/grocery');
               },
             ),
           ],
