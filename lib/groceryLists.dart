@@ -26,7 +26,6 @@ class _GroceryListsState extends State<GroceryLists> {
     _subscription = db.collection(dbName).stream.listen((event) {
 
       setState(() {
-
         String title = event['title'];
         print(event);
         groceryLists.add(ListTile(title: Text(title), onTap: (){  Navigator.push(

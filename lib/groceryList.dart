@@ -16,7 +16,7 @@ class _GroceryListState extends State<GroceryList> {
   final db = Localstore.instance;
   String dbName = "groceryLists";
 
-  List<ListTile> items = [];
+  List<CheckboxListTile> items = [];
   List<dynamic> currentItemList = [];
   @override
   void initState() {
@@ -24,19 +24,36 @@ class _GroceryListState extends State<GroceryList> {
 
     currentItemList = widget.listItems;
 
-    widget.listItems.forEach((element) { items.add(ListTile(title: Text(element), onTap: (){
+    widget.listItems.forEach((element) { items.add(
+        CheckboxListTile(title: Text(element), value: false, onChanged: (bool? value) {  }, controlAffinity: ListTileControlAffinity.leading, secondary: IconButton(icon: Icon(Icons.delete), onPressed: (){
+          deleteItem(element);
+        },),)
 
-    },));});
+    );});
     super.initState();
+  }
+
+  void deleteItem(String id){
+    currentItemList.remove(id);
+    updateList();
   }
 
   void updateList(){
 
+    db.collection(dbName).doc(widget.id).set({
+      'id' : widget.id,
+      'title' : widget.title,
+      'items' : currentItemList
+
+    });
+
     items = [];
-    currentItemList.forEach((element) { items.add(ListTile(title: Text(element), onTap: (){
+    currentItemList.forEach((element) { items.add(
+        CheckboxListTile(title: Text(element), value: false,onChanged: (bool? value) {  }, controlAffinity: ListTileControlAffinity.leading, secondary: IconButton(icon: Icon(Icons.delete), onPressed: (){
+          deleteItem(element);
+        },))
 
-
-    },));});
+    );});
     setState(() {
 
     });
@@ -79,12 +96,6 @@ class _GroceryListState extends State<GroceryList> {
                       onPressed: () {
                         currentItemList.add(newGroupController.text);
                         updateList();
-                        db.collection(dbName).doc(widget.id).set({
-                          'id' : widget.id,
-                          'title' : widget.title,
-                          'items' : currentItemList
-
-                        });
                         Navigator.of(context).pop();
                       },
                       child: const Text("Create"),
