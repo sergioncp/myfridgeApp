@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:localstore/localstore.dart';
+import 'package:myfridge/groceryList.dart';
 
 class GroceryLists extends StatefulWidget {
   const GroceryLists({Key? key}) : super(key: key);
@@ -14,30 +15,24 @@ class _GroceryListsState extends State<GroceryLists> {
 
   final db = Localstore.instance;
 
-  //final _items = <String, Todo>{};
   StreamSubscription<Map<String, dynamic>>? _subscription;
 
-  Future<void> getLists() async {
-    //groceryLists = [];
-    final items = await db.collection('lists').get();
+  String dbName = "groceryLists";
 
-    items?.forEach((key, value) {
-      String title = value['title'];
-      print(title);
-      groceryLists.add(ListTile(title: Text(title),));
-    });
-    //print(items);
-  }
 
   void initState(){
     super.initState();
 
-    _subscription = db.collection('lists').stream.listen((event) {
+    _subscription = db.collection(dbName).stream.listen((event) {
+
       setState(() {
 
         String title = event['title'];
-        print(title);
-        groceryLists.add(ListTile(title: Text(title),));
+        print(event);
+        groceryLists.add(ListTile(title: Text(title), onTap: (){  Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => GroceryList(listItems: event['items'], id: event['id'], title: event['title'])),
+        );},));
       });
     });
 
@@ -74,9 +69,10 @@ class _GroceryListsState extends State<GroceryLists> {
                     ),
                     TextButton(
                       onPressed: () {
-                        final id = db.collection('todos').doc().id;
+                        final id = db.collection(dbName).doc().id;
 
-                        db.collection('lists').doc(id).set({
+                        db.collection(dbName).doc(id).set({
+                          'id': id,
                           'title': newGroupController.text,
                           'items': ["1"]
                         });
