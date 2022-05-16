@@ -17,33 +17,23 @@ class _GroceryListState extends State<GroceryList> {
   String dbName = "groceryLists";
 
   List<ListTile> items = [];
+  List<dynamic> currentItemList = [];
   @override
   void initState() {
     // TODO: implement initState
 
-    widget.listItems.forEach((element) { items.add(ListTile(title: Text(element), onTap: (){
-      db.collection(dbName).doc(widget.id).set({
-        'id' : widget.id,
-        'title' : widget.title,
-        'items' : ["1", "2", "3"]
+    currentItemList = widget.listItems;
 
-      });
-      updateList(["1", "2", "3"]);
+    widget.listItems.forEach((element) { items.add(ListTile(title: Text(element), onTap: (){
 
     },));});
     super.initState();
   }
 
-  void updateList(List<dynamic> myList){
+  void updateList(){
 
     items = [];
-    myList.forEach((element) { items.add(ListTile(title: Text(element), onTap: (){
-      db.collection(dbName).doc(widget.id).set({
-        'id' : widget.id,
-        'title' : widget.title,
-        'items' : ["1", "2", "3"]
-
-      });
+    currentItemList.forEach((element) { items.add(ListTile(title: Text(element), onTap: (){
 
 
     },));});
@@ -58,10 +48,52 @@ class _GroceryListState extends State<GroceryList> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
+
       body: ListView(
         children: [
           ...items
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {      showDialog(context: context, builder: (BuildContext context){
+
+          TextEditingController newGroupController = TextEditingController();
+          return SimpleDialog(
+            title: const Text("New Item"),
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField( controller: newGroupController,),
+              ),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text("Cancel"),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        currentItemList.add(newGroupController.text);
+                        updateList();
+                        db.collection(dbName).doc(widget.id).set({
+                          'id' : widget.id,
+                          'title' : widget.title,
+                          'items' : currentItemList
+
+                        });
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text("Create"),
+                    )
+                  ])
+            ],
+          );
+        });},
+
       ),
     );
   }
