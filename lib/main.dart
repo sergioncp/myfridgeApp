@@ -75,7 +75,10 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       }
       if(itemsOnScreen.length == 0){
-        itemsOnScreen.add(Text("No Items Expiring"));
+        itemsOnScreen.add(const Center(child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text("No Items Expiring"),
+        )));
       }
     });
 
@@ -156,15 +159,13 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      body: Center(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          ...itemsOnScreen,
 
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ...itemsOnScreen,
-
-          ],
-        ),
+        ],
       ),
       floatingActionButton: SpeedDial(
         icon: Icons.add,

@@ -18,14 +18,27 @@ class _GroceryListState extends State<GroceryList> {
 
   List<CheckboxListTile> items = [];
   List<dynamic> currentItemList = [];
+  List<bool> checkItems = [];
+
+
   @override
   void initState() {
     // TODO: implement initState
 
     currentItemList = widget.listItems;
 
-    widget.listItems.forEach((element) { items.add(
-        CheckboxListTile(title: Text(element), value: false, onChanged: (bool? value) {  }, controlAffinity: ListTileControlAffinity.leading, secondary: IconButton(icon: Icon(Icons.delete), onPressed: (){
+    int index = 0;
+    widget.listItems.forEach((element) {
+      index++;
+      checkItems.add(false);
+
+      items.add(
+        CheckboxListTile(title: Text(element), value: checkItems[index - 1], onChanged: (bool? value) {  setState(() {
+          print(checkItems[index - 1]);
+         setState(() {
+           checkItems[index - 1] = value!;
+         });
+        });}, controlAffinity: ListTileControlAffinity.leading, secondary: IconButton(icon: Icon(Icons.delete), onPressed: (){
           deleteItem(element);
         },),)
 
@@ -48,10 +61,19 @@ class _GroceryListState extends State<GroceryList> {
     });
 
     items = [];
-    currentItemList.forEach((element) { items.add(
-        CheckboxListTile(title: Text(element), value: false,onChanged: (bool? value) {  }, controlAffinity: ListTileControlAffinity.leading, secondary: IconButton(icon: Icon(Icons.delete), onPressed: (){
+    int index = 0;
+    currentItemList.forEach((element) {
+      index++;
+      checkItems.add(false);
+      items.add(
+        CheckboxListTile(title: Text(element), value: checkItems[index - 1], onChanged: (bool? value) {  setState(() {
+          print(checkItems[index - 1]);
+          setState(() {
+            checkItems[index - 1] = value!;
+          });
+        });}, controlAffinity: ListTileControlAffinity.leading, secondary: IconButton(icon: Icon(Icons.delete), onPressed: (){
           deleteItem(element);
-        },))
+        },),)
 
     );});
     setState(() {
