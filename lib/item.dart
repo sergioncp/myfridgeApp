@@ -19,7 +19,36 @@ class CalendarItem extends StatefulWidget {
 
 
 class _CalendarItemState extends State<CalendarItem> {
-  
+
+  String daysBetween(DateTime from, DateTime to) {
+    from = DateTime(from.year, from.month, from.day);
+    to = DateTime(to.year, to.month, to.day);
+    int difference = (to.difference(from).inHours / 24).round();
+    String relativeDays = "";
+
+
+    switch(difference){
+      case -1:
+        relativeDays = "Expired Yesterday";
+        break;
+      case 0:
+        relativeDays = "Expires Today";
+        break;
+      case 1:
+        relativeDays = "Expires Tomorrow";
+        break;
+      default:
+        if(difference < -1){
+          relativeDays = "Expired " + (difference * -1).toString() + " Days Ago";
+        }else{
+          relativeDays = "Expires In " + difference.toString() + " Days";
+        }
+    }
+
+
+
+    return relativeDays;
+  }
 
   RelativeDateFormat _relativeDateFormatter = RelativeDateFormat(Locale('us'),);
 
@@ -33,7 +62,7 @@ class _CalendarItemState extends State<CalendarItem> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(widget.name + " " , style: TextStyle(color: Colors.white),),
-            Text(_relativeDateFormatter.format(RelativeDateTime(dateTime: DateTime.now(), other: DateTime.parse(widget.date))), style: TextStyle(color: Colors.white),)
+            Text(daysBetween(DateTime.now(), DateTime.parse(widget.date)), style: TextStyle(color: Colors.white),)
           ],
         ),
         decoration: const BoxDecoration(
