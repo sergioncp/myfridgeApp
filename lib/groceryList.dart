@@ -27,7 +27,10 @@ class _GroceryListState extends State<GroceryList> {
     currentItemList = widget.listItems;
 
     widget.listItems.forEach((element) {
-      checkItems.add(false);
+      String title = element;
+      final checked = title.split('/');
+
+      checkItems.add(checked[1] == 'true');
     });
     super.initState();
   }
@@ -47,20 +50,13 @@ class _GroceryListState extends State<GroceryList> {
     });
 
     items = [];
-    int index = 0;
-    currentItemList.forEach((element) {
-      int myvalue = index;
-      checkItems.add(false);
-      items.add(
-          CheckboxListTile(title: Text(element), value: checkItems[myvalue], onChanged: (bool? value) { setState(() {
-            checkItems[myvalue] = !checkItems[myvalue];
-            print(checkItems[myvalue]);
-          });}, controlAffinity: ListTileControlAffinity.leading, secondary: IconButton(icon: Icon(Icons.delete), onPressed: (){
-            deleteItem(element);
-          },),)
 
-    );
-      index++;
+    currentItemList.forEach((element) {
+
+      String title = element;
+      final checked = title.split('/');
+
+      checkItems.add(checked[1] == 'true');
     });
     setState(() {
 
@@ -76,8 +72,11 @@ class _GroceryListState extends State<GroceryList> {
 
       body: ListView.builder(itemCount: widget.listItems.length,itemBuilder: (context, index){
 
-        return CheckboxListTile(title:Text(widget.listItems[index]) , value: checkItems[index], onChanged: (bool? value) { setState(() {
-          checkItems[index] = !checkItems[index]; print(checkItems[index]);
+        String title = widget.listItems[index];
+        final checked = title.split('/');
+        print(checked);
+        return CheckboxListTile(title:Text(checked[0]) , value: checkItems[index], onChanged: (bool? value) { setState(() {
+          checkItems[index] = !checkItems[index]; currentItemList[index] = checked[0] +"/"+ (value).toString(); updateList();
         });}, controlAffinity: ListTileControlAffinity.leading, secondary: IconButton(icon: Icon(Icons.delete), onPressed: (){
           deleteItem(widget.listItems[index]);
         },));
