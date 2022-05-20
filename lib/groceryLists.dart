@@ -14,32 +14,24 @@ class GroceryLists extends StatefulWidget {
 class _GroceryListsState extends State<GroceryLists> {
 
   final db = Localstore.instance;
+  String dbName = "groceryLists";
 
   StreamSubscription<Map<String, dynamic>>? _subscription;
 
-  String dbName = "groceryLists";
 
 
   void initState(){
     super.initState();
 
-    _subscription = db.collection(dbName).stream.listen((event) {
-
-      setState(() {
-        String title = event['title'];
-        print(event);
-        groceryLists.add(ListTile(title: Text(title), onTap: (){  Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => GroceryList(listItems: event['items'], id: event['id'], title: event['title'])),
-        );},));
-      });
-    });
-
   }
 
   List<ListTile> groceryLists = [];
+
+
   @override
   Widget build(BuildContext context) {
+
+
 
     return Scaffold(
       appBar: AppBar(
@@ -87,9 +79,34 @@ class _GroceryListsState extends State<GroceryLists> {
         });},
 
       ),
-      body: ListView(
-        children: [...groceryLists],
+      body: FutureBuilder<Map<String, dynamic>?>(
+        future: db.collection(dbName).get(), // a previously-obtained Future<String> or null
+        builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>?> snapshot) {
+          List<dynamic> itemList = [];
+
+          if (snapshot.hasData) {
+            print(snapshot.data);
+            snapshot.data?.forEach((key, value) { itemList.add(value);});
+            print(itemList);
+          } else if (snapshot.hasError) {
+            print("There has been an error");
+          } else {
+
+          }
+
+
+          return ListView.builder(itemCount: itemList.length, itemBuilder: (context, index ) {
+            dynamic event = itemList[index];
+            return ListTile(title: Text(event['title']), onTap: (){  Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => GroceryList(listItems: event['items'], id: event['id'], title: event['title'])),
+          );},);});
+        },
       ),
+
+      //ListView(
+        //children: [...groceryLists],
+      //),
     );
   }
 }

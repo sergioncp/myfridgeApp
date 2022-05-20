@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:localstore/localstore.dart';
 import 'package:myfridge/groceryLists.dart';
 import 'package:myfridge/new_item.dart';
 import 'calendar_appbar.dart';
@@ -44,6 +45,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  final db = Localstore.instance;
+  String dbName = "groceryLists";
 
   DateTime? selectedDate;
 
@@ -154,6 +158,12 @@ class _MyHomePageState extends State<MyHomePage> {
               title: const Text('Grocery Lists'),
               onTap: () {
                 Navigator.pushNamed(context, '/grocery');
+              },
+            ),
+            ListTile(
+              title: const Text('Delete Item'),
+              onTap: () {
+                db.collection(dbName).doc('75cp3n1ec').delete(); //
               },
             ),
           ],
