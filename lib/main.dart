@@ -160,12 +160,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 Navigator.pushNamed(context, '/grocery');
               },
             ),
-            ListTile(
-              title: const Text('Delete Item'),
-              onTap: () {
-                db.collection(dbName).doc('75cp3n1ec').delete(); //
-              },
-            ),
           ],
         ),
       ),

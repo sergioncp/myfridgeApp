@@ -100,7 +100,8 @@ class _GroceryListsState extends State<GroceryLists> {
             return ListTile(title: Text(event['title']), onTap: (){  Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => GroceryList(listItems: event['items'], id: event['id'], title: event['title'])),
-          );},);});
+          );},);}
+          );
         },
       ),
 

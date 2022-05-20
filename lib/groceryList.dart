@@ -23,26 +23,12 @@ class _GroceryListState extends State<GroceryList> {
 
   @override
   void initState() {
-    // TODO: implement initState
 
     currentItemList = widget.listItems;
 
-    int index = 0;
     widget.listItems.forEach((element) {
-      index++;
       checkItems.add(false);
-
-      items.add(
-        CheckboxListTile(title: Text(element), value: checkItems[index - 1], onChanged: (bool? value) {  setState(() {
-          print(checkItems[index - 1]);
-         setState(() {
-           checkItems[index - 1] = value!;
-         });
-        });}, controlAffinity: ListTileControlAffinity.leading, secondary: IconButton(icon: Icon(Icons.delete), onPressed: (){
-          deleteItem(element);
-        },),)
-
-    );});
+    });
     super.initState();
   }
 
@@ -63,19 +49,19 @@ class _GroceryListState extends State<GroceryList> {
     items = [];
     int index = 0;
     currentItemList.forEach((element) {
-      index++;
+      int myvalue = index;
       checkItems.add(false);
       items.add(
-        CheckboxListTile(title: Text(element), value: checkItems[index - 1], onChanged: (bool? value) {  setState(() {
-          print(checkItems[index - 1]);
-          setState(() {
-            checkItems[index - 1] = value!;
-          });
-        });}, controlAffinity: ListTileControlAffinity.leading, secondary: IconButton(icon: Icon(Icons.delete), onPressed: (){
-          deleteItem(element);
-        },),)
+          CheckboxListTile(title: Text(element), value: checkItems[myvalue], onChanged: (bool? value) { setState(() {
+            checkItems[myvalue] = !checkItems[myvalue];
+            print(checkItems[myvalue]);
+          });}, controlAffinity: ListTileControlAffinity.leading, secondary: IconButton(icon: Icon(Icons.delete), onPressed: (){
+            deleteItem(element);
+          },),)
 
-    );});
+    );
+      index++;
+    });
     setState(() {
 
     });
@@ -88,11 +74,14 @@ class _GroceryListState extends State<GroceryList> {
         title: Text(widget.title),
       ),
 
-      body: ListView(
-        children: [
-          ...items
-        ],
-      ),
+      body: ListView.builder(itemCount: widget.listItems.length,itemBuilder: (context, index){
+
+        return CheckboxListTile(title:Text(widget.listItems[index]) , value: checkItems[index], onChanged: (bool? value) { setState(() {
+          checkItems[index] = !checkItems[index]; print(checkItems[index]);
+        });}, controlAffinity: ListTileControlAffinity.leading, secondary: IconButton(icon: Icon(Icons.delete), onPressed: (){
+          deleteItem(widget.listItems[index]);
+        },));
+      }),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {      showDialog(context: context, builder: (BuildContext context){
