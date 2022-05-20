@@ -121,11 +121,14 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
 
     CalendarAppBar appBar = CalendarAppBar(
-      backButton: false,
+      backButton: true,
+      backButtonCallback: (){ _scaffoldKey.currentState!.openDrawer();},
       onDateChanged: (value) => onDateChanged(value),
       firstDate: firstDate,
       selectedDate: DateTime.now(),
@@ -134,6 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: appBar,
       drawer: Drawer(
         child: ListView(

@@ -44,6 +44,8 @@ class CalendarAppBar extends StatefulWidget implements PreferredSizeWidget {
   ///definiton of the calendar language
   final String? locale;
 
+  final Function? backButtonCallback;
+
   ///initialization of [CalendarAppBar]
   CalendarAppBar({
     Key? key,
@@ -59,6 +61,7 @@ class CalendarAppBar extends StatefulWidget implements PreferredSizeWidget {
     this.black,
     this.padding,
     this.locale,
+    this.backButtonCallback
   }) : super(
           key: key,
         ) {
@@ -578,10 +581,10 @@ class _CalendarAppBarState extends State<CalendarAppBar> {
                           children: [
                             GestureDetector(
                                 child: Icon(
-                                  Icons.arrow_back_ios_rounded,
+                                  Icons.menu,
                                   color: white,
                                 ),
-                                onTap: () => Navigator.pop(context)),
+                                onTap: () => widget.backButtonCallback!()),
                             GestureDetector(
                               onTap: () => fullCalendar
                                   ? showFullCalendar(_locale)
