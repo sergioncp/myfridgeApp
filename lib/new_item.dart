@@ -56,7 +56,15 @@ class _AddNewItemState extends State<AddNewItem> {
 
 
   Widget build(BuildContext context) {
-    final arg = ModalRoute.of(context)!.settings.arguments as Function;
+    final arg = ModalRoute.of(context)!.settings.arguments as Map<String,dynamic>;
+
+    Function createNew = arg['createNewEventFunction'];
+    String itemName = arg['itemName'];
+
+    if(itemName != 'none'){
+      itemNameController.text = itemName;
+    }
+
 
 
     final localizations = MaterialLocalizations.of(context);
@@ -96,7 +104,7 @@ class _AddNewItemState extends State<AddNewItem> {
               ],
             ),
           ),
-          ElevatedButton(onPressed: (){ arg(datePicked, itemNameController.text); Navigator.pop(context);}, child: Text("Add Item"))
+          ElevatedButton(onPressed: (){ createNew(datePicked, itemNameController.text); Navigator.pop(context);}, child: Text("Add Item"))
         ],
       ),
 

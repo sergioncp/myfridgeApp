@@ -123,8 +123,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (result.status == 1) {
       print(result.product!.productName);
+      Navigator.pushNamed(context, '/new', arguments: {'createNewEventFunction' : createNewEvent, 'itemName': result.product!.productName});
       return result.product;
     } else {
+      Navigator.pushNamed(context, '/new', arguments: {'createNewEventFunction' : createNewEvent, 'itemName': 'none'});
       throw Exception('product not found, please insert data for ' + barcode);
     }
   }
@@ -214,7 +216,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: const Icon(Icons.edit),
             backgroundColor: Colors.blue,
             foregroundColor: Colors.white,
-            onTap: () => Navigator.pushNamed(context, '/new', arguments: createNewEvent)
+            onTap: () => Navigator.pushNamed(context, '/new', arguments: {'createNewEventFunction' : createNewEvent, 'itemName': 'none'})
           )
         ]
       ), // This trailing comma makes auto-formatting nicer for build methods.
