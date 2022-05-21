@@ -63,6 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late List<CalendarItem> eventList = [];
 
   void onDateChanged(DateTime value) {
+    selectedDate = value;
     itemsOnScreen = [];
     setState(() {
       var it = eventList.iterator;
@@ -71,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
         CalendarItem item = it.current;
 
         if (item.date == getDateTimeFormat(value)) {
-          print(item);
+          //print(item.date);
           itemsOnScreen.add(item);
         }
       }
@@ -105,7 +106,12 @@ class _MyHomePageState extends State<MyHomePage> {
         name: itemName,
       ));
 
-      onDateChanged(date);
+      print(getDateTimeFormat(date));
+      print(getDateTimeFormat(selectedDate!));
+      if (getDateTimeFormat(date) == getDateTimeFormat(selectedDate!)){
+        onDateChanged(date);
+      }
+
     });
   }
 
@@ -128,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ProductResult result = await OpenFoodAPIClient.getProduct(configuration);
 
     if (result.status == 1) {
-      print(result.product!.productName);
+      //print(result.product!.productName);
       Navigator.pushNamed(context, '/new', arguments: {
         'createNewEventFunction': createNewEvent,
         'itemName': result.product!.productName
