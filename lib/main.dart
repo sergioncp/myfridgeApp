@@ -26,12 +26,12 @@ class MyApp extends StatelessWidget {
       title: 'My Fridge',
       initialRoute: '/',
       routes: {
-          // When navigating to the "/" route, build the FirstScreen widget.
-          '/': (context) => const MyHomePage(title: "MyFridge"),
-          // When navigating to the "/second" route, build the SecondScreen widget.
-          '/new': (context) => const AddNewItem(),
-          '/grocery' : (context) => const GroceryLists(),
-        },
+        // When navigating to the "/" route, build the FirstScreen widget.
+        '/': (context) => const MyHomePage(title: "MyFridge"),
+        // When navigating to the "/second" route, build the SecondScreen widget.
+        '/new': (context) => const AddNewItem(),
+        '/grocery': (context) => const GroceryLists(),
+      },
     );
   }
 }
@@ -46,7 +46,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   final db = Localstore.instance;
   String dbName = "groceryLists";
 
@@ -55,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
   DateTime firstDate = DateTime.now().subtract(const Duration(days: 10));
   DateTime lastDate = DateTime.now().add(const Duration(days: 100));
 
-  String expiring = 'Nothing Expiring' ;
+  String expiring = 'Nothing Expiring';
 
   List<String> eventBoard = [];
 
@@ -63,70 +62,81 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late List<CalendarItem> eventList = [];
 
-
-  void onDateChanged(DateTime value){
-
+  void onDateChanged(DateTime value) {
     itemsOnScreen = [];
     setState(() {
-
       var it = eventList.iterator;
 
-      while(it.moveNext()){
+      while (it.moveNext()) {
         CalendarItem item = it.current;
 
-        if(item.date == getDateTimeFormat(value)){
+        if (item.date == getDateTimeFormat(value)) {
           print(item);
           itemsOnScreen.add(item);
         }
       }
-      if(itemsOnScreen.length == 0){
-        itemsOnScreen.add(const Center(child: Padding(
+      if (itemsOnScreen.length == 0) {
+        itemsOnScreen.add(const Center(
+            child: Padding(
           padding: EdgeInsets.all(8.0),
           child: Text("No Items Expiring"),
         )));
       }
     });
-
-
-
-  }
-  String getDateTimeFormat(DateTime date){
-
-    return  date.year.toString() + "-" + (date.month.toString().length == 1 ? "0"+date.month.toString() : date.month.toString()) + "-" + (date.day.toString().length == 1 ? "0"+date.day.toString() : date.day.toString() );
   }
 
-  void createNewEvent(DateTime date, String itemName){
+  String getDateTimeFormat(DateTime date) {
+    return date.year.toString() +
+        "-" +
+        (date.month.toString().length == 1
+            ? "0" + date.month.toString()
+            : date.month.toString()) +
+        "-" +
+        (date.day.toString().length == 1
+            ? "0" + date.day.toString()
+            : date.day.toString());
+  }
 
+  void createNewEvent(DateTime date, String itemName) {
     setState(() {
       eventBoard.add(getDateTimeFormat(date));
-      eventList.add(CalendarItem(date: getDateTimeFormat(date), name: itemName,));
+      eventList.add(CalendarItem(
+        date: getDateTimeFormat(date),
+        name: itemName,
+      ));
     });
-
   }
+
   Future<void> scanBarcode() async {
+    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+        "#ff6666", "Cancel", false, ScanMode.BARCODE);
 
-    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#ff6666","Cancel",false,ScanMode.BARCODE);
+    if(barcodeScanRes != "-1"){
+      getProduct(barcodeScanRes.toString());
+    }
 
-    getProduct(barcodeScanRes.toString());
     //print(barcodeScanRes);
   }
 
-  void updateAppBar(CalendarAppBar bar){
-
-  }
+  void updateAppBar(CalendarAppBar bar) {}
 
   Future<Product?> getProduct(var barcode) async {
-
     ProductQueryConfiguration configuration = ProductQueryConfiguration(barcode,
         language: OpenFoodFactsLanguage.ENGLISH, fields: [ProductField.ALL]);
     ProductResult result = await OpenFoodAPIClient.getProduct(configuration);
 
     if (result.status == 1) {
       print(result.product!.productName);
-      Navigator.pushNamed(context, '/new', arguments: {'createNewEventFunction' : createNewEvent, 'itemName': result.product!.productName});
+      Navigator.pushNamed(context, '/new', arguments: {
+        'createNewEventFunction': createNewEvent,
+        'itemName': result.product!.productName
+      });
       return result.product;
     } else {
-      Navigator.pushNamed(context, '/new', arguments: {'createNewEventFunction' : createNewEvent, 'itemName': 'none'});
+      Navigator.pushNamed(context, '/new', arguments: {
+        'createNewEventFunction': createNewEvent,
+        'itemName': 'none'
+      });
       throw Exception('product not found, please insert data for ' + barcode);
     }
   }
@@ -143,15 +153,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     CalendarAppBar appBar = CalendarAppBar(
       backButton: true,
-      backButtonCallback: (){ _scaffoldKey.currentState!.openDrawer();},
+      backButtonCallback: () {
+        _scaffoldKey.currentState!.openDrawer();
+      },
       onDateChanged: (value) => onDateChanged(value),
       firstDate: firstDate,
       selectedDate: DateTime.now(),
       lastDate: lastDate,
-      events: List.generate(eventBoard.length, (index) => DateTime.parse(eventBoard[index])),
+      events: List.generate(
+          eventBoard.length, (index) => DateTime.parse(eventBoard[index])),
     );
 
     return Scaffold(
@@ -170,22 +182,15 @@ class _MyHomePageState extends State<MyHomePage> {
             ListTile(
               title: const Text('Calendar'),
               onTap: () {
-                if(ModalRoute.of(context)?.settings.name == '/'){
+                if (ModalRoute.of(context)?.settings.name == '/') {
                   Navigator.pop(context);
                 }
-
               },
             ),
             ListTile(
               title: const Text('Grocery Lists'),
               onTap: () {
                 Navigator.pushNamed(context, '/grocery');
-              },
-            ),
-            ListTile(
-              title: const Text('Food API Test'),
-              onTap: () {
-
               },
             ),
           ],
@@ -196,30 +201,30 @@ class _MyHomePageState extends State<MyHomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           ...itemsOnScreen,
-
         ],
       ),
       floatingActionButton: SpeedDial(
-        icon: Icons.add,
-        activeIcon: Icons.close,
-        spacing: 5,
-        spaceBetweenChildren: 5,
-        renderOverlay: false,
-        children: [
-          SpeedDialChild(
-            child: const Icon(Icons.photo_camera),
-            backgroundColor: Colors.blue,
-            foregroundColor: Colors.white,
-            onTap: () => scanBarcode(),
-          ),
-          SpeedDialChild(
-            child: const Icon(Icons.edit),
-            backgroundColor: Colors.blue,
-            foregroundColor: Colors.white,
-            onTap: () => Navigator.pushNamed(context, '/new', arguments: {'createNewEventFunction' : createNewEvent, 'itemName': 'none'})
-          )
-        ]
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+          icon: Icons.add,
+          activeIcon: Icons.close,
+          spacing: 5,
+          spaceBetweenChildren: 5,
+          renderOverlay: false,
+          children: [
+            SpeedDialChild(
+              child: const Icon(Icons.photo_camera),
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              onTap: () => scanBarcode(),
+            ),
+            SpeedDialChild(
+                child: const Icon(Icons.edit),
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+                onTap: () => Navigator.pushNamed(context, '/new', arguments: {
+                      'createNewEventFunction': createNewEvent,
+                      'itemName': 'none'
+                    }))
+          ]), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
