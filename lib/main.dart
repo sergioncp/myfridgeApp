@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:localstore/localstore.dart';
 import 'package:myfridge/groceryLists.dart';
 import 'package:myfridge/new_item.dart';
+import 'package:openfoodfacts/openfoodfacts.dart';
 import 'calendar_appbar.dart';
 import 'dart:math';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -106,11 +107,26 @@ class _MyHomePageState extends State<MyHomePage> {
 
     String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#ff6666","Cancel",false,ScanMode.BARCODE);
 
-    print(barcodeScanRes);
+    getProduct(barcodeScanRes.toString());
+    //print(barcodeScanRes);
   }
 
   void updateAppBar(CalendarAppBar bar){
 
+  }
+
+  Future<Product?> getProduct(var barcode) async {
+
+    ProductQueryConfiguration configuration = ProductQueryConfiguration(barcode,
+        language: OpenFoodFactsLanguage.ENGLISH, fields: [ProductField.ALL]);
+    ProductResult result = await OpenFoodAPIClient.getProduct(configuration);
+
+    if (result.status == 1) {
+      print(result.product!.productName);
+      return result.product;
+    } else {
+      throw Exception('product not found, please insert data for ' + barcode);
+    }
   }
 
   @override
@@ -162,6 +178,12 @@ class _MyHomePageState extends State<MyHomePage> {
               title: const Text('Grocery Lists'),
               onTap: () {
                 Navigator.pushNamed(context, '/grocery');
+              },
+            ),
+            ListTile(
+              title: const Text('Food API Test'),
+              onTap: () {
+
               },
             ),
           ],

@@ -104,7 +104,7 @@ class _GroceryListState extends State<GroceryList> {
                     ),
                     TextButton(
                       onPressed: () {
-                        currentItemList.add(newGroupController.text);
+                        currentItemList.add(newGroupController.text+"/false");
                         updateList();
                         Navigator.of(context).pop();
                       },
