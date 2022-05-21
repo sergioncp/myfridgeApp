@@ -104,6 +104,8 @@ class _MyHomePageState extends State<MyHomePage> {
         date: getDateTimeFormat(date),
         name: itemName,
       ));
+
+      onDateChanged(date);
     });
   }
 
@@ -145,6 +147,11 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     setState(() {
       selectedDate = DateTime.now();
+      itemsOnScreen.add(const Center(
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text("No Items Expiring"),
+          )));
     });
     super.initState();
   }
