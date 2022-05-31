@@ -7,10 +7,12 @@ class CalendarItem extends StatefulWidget {
     Key? key,
     required this.date,
     required this.name,
+    required this.delete
   }) : super(key: key);
 
   final date;
   final name;
+  final delete;
 
   @override
   _CalendarItemState createState() => _CalendarItemState();
@@ -50,24 +52,60 @@ class _CalendarItemState extends State<CalendarItem> {
     return relativeDays;
   }
 
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('AlertDialog Title'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('This is a demo alert dialog.'),
+                Text('Would you like to approve of this message?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Approve'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
   RelativeDateFormat _relativeDateFormatter = RelativeDateFormat(Locale('us'),);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return
+
+      Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(widget.name + " " , style: TextStyle(color: Colors.white),),
-            Text(daysBetween(DateTime.now(), DateTime.parse(widget.date)), style: TextStyle(color: Colors.white),)
-          ],
+      child: GestureDetector(
+        onLongPress: (){
+          widget.delete(widget.name);
+        },
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(widget.name + " " , style: TextStyle(color: Colors.white),),
+              Text(daysBetween(DateTime.now(), DateTime.parse(widget.date)), style: TextStyle(color: Colors.white),)
+            ],
+          ),
+          decoration: const BoxDecoration(
+          color: Colors.blue,
+          borderRadius: BorderRadius.all(Radius.circular(5))),
         ),
-        decoration: const BoxDecoration(
-        color: Colors.blue,
-        borderRadius: BorderRadius.all(Radius.circular(5))),
       ),
     );
   }

@@ -86,6 +86,34 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void deleteItem(String name) {
+    itemsOnScreen = [];
+    CalendarItem? remove = null;
+    setState(() {
+      var it = eventList.iterator;
+
+      while (it.moveNext()) {
+        CalendarItem item = it.current;
+
+        if (item.name == name) {
+          //print(item.date);
+          remove = item;
+          //itemsOnScreen.add(item);
+        }
+      }
+
+      setState(() {
+        if(remove != null){
+          eventList.remove(remove);
+          eventBoard.remove(remove!.date);
+          itemsOnScreen.remove(remove);
+
+        }
+      });
+    });
+  }
+
+
   String getDateTimeFormat(DateTime date) {
     return date.year.toString() +
         "-" +
@@ -104,6 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
       eventList.add(CalendarItem(
         date: getDateTimeFormat(date),
         name: itemName,
+        delete: deleteItem,
       ));
 
       print(getDateTimeFormat(date));
@@ -235,7 +264,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 foregroundColor: Colors.white,
                 onTap: () => Navigator.pushNamed(context, '/new', arguments: {
                       'createNewEventFunction': createNewEvent,
-                      'itemName': 'none'
+                      'itemName': 'none',
+                      'selectedDate' : selectedDate
                     }))
           ]), // This trailing comma makes auto-formatting nicer for build methods.
     );

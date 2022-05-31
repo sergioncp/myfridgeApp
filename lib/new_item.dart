@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 class AddNewItem extends StatefulWidget {
   const AddNewItem({Key? key}) : super(key: key);
 
-
   @override
   _AddNewItemState createState() => _AddNewItemState();
 }
@@ -19,6 +18,10 @@ class _AddNewItemState extends State<AddNewItem> {
 
   TextEditingController itemNameController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -60,7 +63,12 @@ class _AddNewItemState extends State<AddNewItem> {
 
     Function createNew = arg['createNewEventFunction'];
     String itemName = arg['itemName'];
+    DateTime selectedDate = arg['selectedDate'];
+    print(selectedDate);
 
+    if(datePicked.day != selectedDate.day){
+      datePicked = selectedDate;
+    }
     if(itemName != 'none'){
       itemNameController.text = itemName;
     }
